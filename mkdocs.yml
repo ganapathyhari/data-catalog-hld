@@ -1,0 +1,69 @@
+site_name: 20PB Data Catalog — High Level Design
+site_description: Solution Architecture for 20PB Genomics & Research Data Cataloging Platform on OpenShift
+site_author: Solution Architecture Team
+docs_dir: docs
+site_dir: site
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: blue
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: blue
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - toc.integrate
+
+markdown_extensions:
+  - admonition
+  - tables
+  - attr_list
+  - def_list
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+plugins:
+  - search
+
+nav:
+  - Home: index.md
+  - Architecture:
+    - Overview: architecture/overview.md
+    - Storage Integration: architecture/storage-integration.md
+    - OpenShift Deployment: architecture/deployment.md
+  - Components:
+    - Ingestion Pipeline: components/ingestion.md
+    - Data Catalog: components/catalog.md
+    - Semantic Layer: components/semantic-layer.md
+    - File Formats: components/file-formats.md
+  - Design Decisions:
+    - Trade-off Analysis: decisions/trade-offs.md
+    - Phased Roadmap: decisions/roadmap.md
