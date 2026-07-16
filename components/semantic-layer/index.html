@@ -1,0 +1,1317 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Solution Architecture for 20PB Genomics & Research Data Cataloging Platform on OpenShift">
+      
+      
+        <meta name="author" content="Solution Architecture Team">
+      
+      
+      
+        <link rel="prev" href="../catalog/">
+      
+      
+        <link rel="next" href="../file-formats/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Semantic Layer - 20PB Data Catalog — High Level Design</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#semantic-layer" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="20PB Data Catalog — High Level Design" class="md-header__button md-logo" aria-label="20PB Data Catalog — High Level Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            20PB Data Catalog — High Level Design
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Semantic Layer
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../architecture/overview/" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../ingestion/" class="md-tabs__link">
+          
+  
+  
+  Components
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../decisions/trade-offs/" class="md-tabs__link">
+          
+  
+  
+  Design Decisions
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="20PB Data Catalog — High Level Design" class="md-nav__button md-logo" aria-label="20PB Data Catalog — High Level Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    20PB Data Catalog — High Level Design
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/storage-integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage Integration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OpenShift Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Components
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Components
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ingestion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ingestion Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Catalog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Semantic Layer
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Semantic Layer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#datastax-watsonxai-context-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DataStax + watsonx.ai Context Layer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-semantic-layer-does" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the Semantic Layer Does
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="What the Semantic Layer Does">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#query-translation-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Query Translation Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#datastax-components-in-watsonxdata-premium" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DataStax Components in watsonx.data Premium
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DataStax Components in watsonx.data Premium">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#datastax-langflow-nl-pipeline-builder" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DataStax Langflow — NL Pipeline Builder
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#datastax-astradb-vector-store" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DataStax AstraDB — Vector Store
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#datastax-astra-streaming-event-backbone" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DataStax Astra Streaming — Event Backbone
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#datastax-cassandra-distributed-metadata-store" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DataStax Cassandra — Distributed Metadata Store
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#natural-language-query-end-to-end-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Natural Language Query — End-to-End Flow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#business-semantics-domain-ontology" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Business Semantics — Domain Ontology
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../file-formats/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    File Formats
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Decisions
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design Decisions
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/trade-offs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trade-off Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/roadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Phased Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="semantic-layer">Semantic Layer</h1>
+<h2 id="datastax-watsonxai-context-layer">DataStax + watsonx.ai Context Layer</h2>
+<p>The semantic layer transforms IBM Knowledge Catalog from a metadata store into an <strong>AI-ready, natural language-queryable data fabric</strong>. It is powered by DataStax components available in <strong>IBM watsonx.data Premium</strong>.</p>
+<hr />
+<h2 id="what-the-semantic-layer-does">What the Semantic Layer Does</h2>
+<pre class="mermaid"><code>flowchart TD
+    USER["Researcher\nNon-technical user"]
+    NL["Natural Language Query\n'Show me all RNA-seq samples from 2024 with coverage above 30x'"]
+    LANGFLOW["DataStax Langflow\nRAG Pipeline"]
+    BSE["Business Semantics Engine\nOntology + Policy Layer"]
+    IKC["IBM Knowledge Catalog\nStructured Query API"]
+    AP["Access Planner\nStorage routing"]
+    RESULTS["Results + Data Access URIs\nFiltered by user permissions"]
+
+    USER --&gt; NL --&gt; LANGFLOW
+    LANGFLOW --&gt; BSE
+    BSE --&gt; IKC
+    IKC --&gt; AP
+    AP --&gt; RESULTS --&gt; USER</code></pre>
+<h3 id="query-translation-example">Query Translation Example</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Input:   &quot;RNA-seq samples from 2024 with coverage &gt; 30x&quot;
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>Entity Recognition:
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>  &quot;RNA-seq&quot;    → file_type: fastq OR bam, experiment_type: RNA-seq
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>  &quot;samples&quot;    → asset_type: genomics_sample
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>  &quot;2024&quot;       → sequencing_date: 2024-01-01 to 2024-12-31
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>  &quot;coverage&quot;   → metadata field: coverage
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>  &quot;&gt; 30x&quot;      → filter: coverage &gt; 30
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>Permission Enrichment:
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>  user: researcher_a@org.com
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>  team: genomics-team-a
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>  → add filter: catalog_domain = genomics-team-a
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>Output Structured Query:
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>  asset_type=genomics_sample
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>  AND experiment_type=RNA-seq
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>  AND sequencing_date BETWEEN 2024-01-01 AND 2024-12-31
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>  AND coverage &gt; 30
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>  AND catalog_domain = genomics-team-a
+</code></pre></div>
+<hr />
+<h2 id="datastax-components-in-watsonxdata-premium">DataStax Components in watsonx.data Premium</h2>
+<div class="admonition info">
+<p class="admonition-title">IBM Acquisition</p>
+<p>DataStax was acquired by IBM in 2024 and is now part of <strong>IBM watsonx.data Premium</strong>. All DataStax components below are available as IBM-native deployments on OpenShift.</p>
+</div>
+<h3 id="datastax-langflow-nl-pipeline-builder">DataStax Langflow — NL Pipeline Builder</h3>
+<p>Langflow is a visual RAG (Retrieval Augmented Generation) pipeline builder that powers the natural language interface.</p>
+<pre class="mermaid"><code>flowchart LR
+    subgraph LANGFLOW_PIPE["Langflow Pipeline"]
+        INPUT["User NL Input"]
+        LLM["watsonx.ai LLM\ngranite / llama"]
+        EMBED["Embedding Model\ntext-to-vector"]
+        ASTRA_SEARCH["AstraDB\nVector similarity search\nfind related assets"]
+        IKC_API["IKC REST API\nStructured metadata query"]
+        CONTEXT["Context Assembly\nCombine vector + structured results"]
+        OUTPUT["Formatted Response\n+ asset links + access URIs"]
+    end
+
+    INPUT --&gt; LLM
+    INPUT --&gt; EMBED
+    EMBED --&gt; ASTRA_SEARCH
+    LLM --&gt; IKC_API
+    ASTRA_SEARCH --&gt; CONTEXT
+    IKC_API --&gt; CONTEXT
+    CONTEXT --&gt; LLM
+    LLM --&gt; OUTPUT</code></pre>
+<p><strong>Key capabilities:</strong>
+- Visual no-code pipeline editing — maintainable without AI assistance
+- Connects to watsonx.ai models natively
+- Dual retrieval: vector similarity (AstraDB) + structured query (IKC API)
+- Permission-aware — applies user context to every query</p>
+<hr />
+<h3 id="datastax-astradb-vector-store">DataStax AstraDB — Vector Store</h3>
+<p>AstraDB replaces the need for a standalone Milvus deployment. It provides:</p>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Storage</strong></td>
+<td>Vector embeddings of file content and metadata</td>
+</tr>
+<tr>
+<td><strong>Search</strong></td>
+<td>Approximate Nearest Neighbour (ANN) — sub-second semantic similarity</td>
+</tr>
+<tr>
+<td><strong>Use cases</strong></td>
+<td>"Find files similar to this one", "Show related genomics studies"</td>
+</tr>
+<tr>
+<td><strong>Index type</strong></td>
+<td>HNSW (Hierarchical Navigable Small World)</td>
+</tr>
+<tr>
+<td><strong>Integration</strong></td>
+<td>Native Langflow connector, watsonx.ai embedding output</td>
+</tr>
+<tr>
+<td><strong>Deployment</strong></td>
+<td>Cassandra-backed StatefulSet on OpenShift</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Embedding strategy by file type:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Asset Type</th>
+<th>What Gets Embedded</th>
+<th>Embedding Model</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Genomics samples</td>
+<td>Sample metadata JSON + experiment summary</td>
+<td>watsonx.ai <code>slate-30m-english-rtrvr</code></td>
+</tr>
+<tr>
+<td>Research documents</td>
+<td>Extracted text content (via Tika)</td>
+<td>watsonx.ai <code>slate-30m-english-rtrvr</code></td>
+</tr>
+<tr>
+<td>Microscopy images</td>
+<td>EXIF + OME metadata summary</td>
+<td>watsonx.ai <code>slate-30m-english-rtrvr</code></td>
+</tr>
+<tr>
+<td>Tabular datasets</td>
+<td>Column names + schema description</td>
+<td>watsonx.ai <code>slate-30m-english-rtrvr</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="datastax-astra-streaming-event-backbone">DataStax Astra Streaming — Event Backbone</h3>
+<p>Astra Streaming (Apache Pulsar) replaces the need for a standalone Kafka deployment:</p>
+<pre class="mermaid"><code>flowchart LR
+    NIFI["Apache NiFi\nPublishPulsar processor"] --&gt;|metadata.extracted topic| ASTRA_STR["Astra Streaming\nPulsar broker"]
+    ASTRA_STR --&gt;|consume| IKC_SINK["IKC Asset Creator\nConsumer service"]
+    ASTRA_STR --&gt;|consume| EMBED_SINK["Embedding Generator\nwatsonx.ai + AstraDB"]
+    ASTRA_STR --&gt;|consume| AUDIT_SINK["Audit Log\nGovernance events"]
+    ASTRA_STR --&gt;|consume| NOTIFY_SINK["Notification Service\nTeam alerts on new data"]</code></pre>
+<p><strong>Topics:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Topic</th>
+<th>Producer</th>
+<th>Consumers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>metadata.extracted</code></td>
+<td>NiFi</td>
+<td>IKC asset creator, embedding generator</td>
+</tr>
+<tr>
+<td><code>asset.created</code></td>
+<td>IKC</td>
+<td>Audit log, team notifications</td>
+</tr>
+<tr>
+<td><code>tape.recall.requested</code></td>
+<td>Access Planner</td>
+<td>IBM Spectrum Archive recall job</td>
+</tr>
+<tr>
+<td><code>tape.recall.completed</code></td>
+<td>Recall monitor</td>
+<td>NiFi content extraction trigger</td>
+</tr>
+<tr>
+<td><code>governance.policy.applied</code></td>
+<td>IKC</td>
+<td>Audit log, compliance reporting</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="datastax-cassandra-distributed-metadata-store">DataStax Cassandra — Distributed Metadata Store</h3>
+<p>Cassandra provides high-throughput, low-latency metadata key-value lookups that complement PostgreSQL for specific access patterns:</p>
+<table>
+<thead>
+<tr>
+<th>Use Case</th>
+<th>Why Cassandra (not PostgreSQL)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>File path → asset ID lookup</td>
+<td>Billions of rows, single-key lookup — Cassandra excels here</td>
+</tr>
+<tr>
+<td>Crawl state tracking</td>
+<td>Write-heavy, append-only — Cassandra's strength</td>
+</tr>
+<tr>
+<td>Real-time metadata event log</td>
+<td>Time-series insert pattern — Cassandra optimised</td>
+</tr>
+<tr>
+<td>Asset tag index</td>
+<td>Wide-column model ideal for sparse tag sets</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="natural-language-query-end-to-end-flow">Natural Language Query — End-to-End Flow</h2>
+<pre class="mermaid"><code>sequenceDiagram
+    actor Researcher
+    participant UI as Langflow NL UI
+    participant LF as Langflow Pipeline
+    participant WX as watsonx.ai LLM
+    participant ASTRA as AstraDB
+    participant IKC as IBM Knowledge Catalog
+    participant AP as Access Planner
+    participant SS as Storage Scale
+    participant TAPE as IBM Tape
+
+    Researcher-&gt;&gt;UI: "Find RNA-seq samples from 2024 with coverage &gt; 30x"
+    UI-&gt;&gt;LF: Forward NL query + user context
+    LF-&gt;&gt;WX: Entity extraction and intent classification
+    WX--&gt;&gt;LF: Structured intent + entities
+    LF-&gt;&gt;ASTRA: Vector similarity search on metadata embeddings
+    ASTRA--&gt;&gt;LF: Candidate asset IDs by similarity
+    LF-&gt;&gt;IKC: Structured API query with filters and permissions
+    IKC--&gt;&gt;LF: Matching asset records + storage paths
+    LF-&gt;&gt;AP: Plan data access for matched assets
+    AP-&gt;&gt;SS: Hot assets — return direct NFS path
+    AP-&gt;&gt;TAPE: Cold assets — submit async recall job
+    AP--&gt;&gt;LF: Access URIs + recall ETAs
+    LF-&gt;&gt;WX: Format final response
+    WX--&gt;&gt;UI: Formatted results with links and metadata
+    UI--&gt;&gt;Researcher: Results table + download links + recall status</code></pre>
+<hr />
+<h2 id="business-semantics-domain-ontology">Business Semantics — Domain Ontology</h2>
+<p>The ontology is maintained as configuration in Langflow — editable without code:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">genomics_ontology</span><span class="p">:</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">terms</span><span class="p">:</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nt">RNA-seq</span><span class="p">:</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">      </span><span class="nt">maps_to</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">experiment_type</span><span class="p p-Indicator">:</span><span class="nv">RNA-seq</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">file_type</span><span class="p p-Indicator">:</span><span class="nv">fastq</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">file_type</span><span class="p p-Indicator">:</span><span class="nv">bam</span><span class="p p-Indicator">]</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="nt">WGS</span><span class="p">:</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">      </span><span class="nt">maps_to</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">experiment_type</span><span class="p p-Indicator">:</span><span class="nv">WGS</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">file_type</span><span class="p p-Indicator">:</span><span class="nv">bam</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">file_type</span><span class="p p-Indicator">:</span><span class="nv">cram</span><span class="p p-Indicator">]</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="nt">quality_score</span><span class="p">:</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">      </span><span class="nt">maps_to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">metadata.qc_score</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="nt">sample</span><span class="p">:</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">      </span><span class="nt">maps_to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">asset_type:genomics_sample</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="nt">coverage</span><span class="p">:</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">      </span><span class="nt">maps_to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">metadata.coverage</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">    </span><span class="nt">related_to</span><span class="p">:</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">      </span><span class="nt">maps_to</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">same_project</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">same_experiment_id</span><span class="p p-Indicator">]</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">    </span><span class="nt">high_coverage</span><span class="p">:</span>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">      </span><span class="nt">maps_to</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;metadata.coverage</span><span class="nv"> </span><span class="s">&gt;</span><span class="nv"> </span><span class="s">30&quot;</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">    </span><span class="nt">recent</span><span class="p">:</span>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">      </span><span class="nt">maps_to</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;sequencing_date</span><span class="nv"> </span><span class="s">&gt;</span><span class="nv"> </span><span class="s">NOW()</span><span class="nv"> </span><span class="s">-</span><span class="nv"> </span><span class="s">INTERVAL</span><span class="nv"> </span><span class="s">1</span><span class="nv"> </span><span class="s">YEAR&quot;</span>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">  </span><span class="nt">policies</span><span class="p">:</span>
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="w">    </span><span class="nt">multi_tenancy</span><span class="p">:</span>
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="w">      </span><span class="nt">always_filter_by</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">catalog_domain = user.team</span>
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="w">    </span><span class="nt">pii_masking</span><span class="p">:</span>
+<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="w">      </span><span class="nt">hide_fields</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">patient_id</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">donor_id</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">personal_identifiers</span><span class="p p-Indicator">]</span>
+<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="w">    </span><span class="nt">access_control</span><span class="p">:</span>
+<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="w">      </span><span class="nt">check_permission</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">IKC asset-level access policy</span>
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "search.share", "content.code.copy", "toc.integrate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

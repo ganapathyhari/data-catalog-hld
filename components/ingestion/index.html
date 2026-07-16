@@ -1,0 +1,1218 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Solution Architecture for 20PB Genomics & Research Data Cataloging Platform on OpenShift">
+      
+      
+        <meta name="author" content="Solution Architecture Team">
+      
+      
+      
+        <link rel="prev" href="../../architecture/deployment/">
+      
+      
+        <link rel="next" href="../catalog/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Ingestion Pipeline - 20PB Data Catalog — High Level Design</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ingestion-pipeline" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="20PB Data Catalog — High Level Design" class="md-header__button md-logo" aria-label="20PB Data Catalog — High Level Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            20PB Data Catalog — High Level Design
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Ingestion Pipeline
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../architecture/overview/" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  
+  Components
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../decisions/trade-offs/" class="md-tabs__link">
+          
+  
+  
+  Design Decisions
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="20PB Data Catalog — High Level Design" class="md-nav__button md-logo" aria-label="20PB Data Catalog — High Level Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    20PB Data Catalog — High Level Design
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/storage-integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage Integration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OpenShift Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Components
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Components
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ingestion Pipeline
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ingestion Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#apache-nifi-astronomer-airflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Apache NiFi + Astronomer Airflow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-two-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why Two Tools?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nifi-vs-airflow-detailed-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NiFi vs Airflow Detailed Comparison
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nifi-pipeline-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NiFi Pipeline Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#airflow-dag-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Airflow DAG Design
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nifi-cluster-sizing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NiFi Cluster Sizing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#astronomer-airflow-deployment-note" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Astronomer Airflow Deployment Note
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Catalog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../semantic-layer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Semantic Layer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../file-formats/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    File Formats
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Decisions
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design Decisions
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/trade-offs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trade-off Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/roadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Phased Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="ingestion-pipeline">Ingestion Pipeline</h1>
+<h2 id="apache-nifi-astronomer-airflow">Apache NiFi + Astronomer Airflow</h2>
+<p>The ingestion layer uses two complementary tools that operate at different levels — NiFi as the <strong>data plane</strong> and Airflow as the <strong>control plane</strong>.</p>
+<hr />
+<h2 id="why-two-tools">Why Two Tools?</h2>
+<pre class="mermaid"><code>flowchart LR
+    subgraph NIFI_ROLE["Apache NiFi — Data Plane"]
+        N1["Moves actual file bytes\nand metadata"]
+        N2["Event-driven reaction\nto new files"]
+        N3["Built-in backpressure\nand flow control"]
+        N4["Per-file provenance\nchain tracking"]
+        N5["Handles binary formats\nBAM, HDF5, DICOM natively"]
+    end
+
+    subgraph AIRFLOW_ROLE["Astronomer Airflow — Control Plane"]
+        A1["Schedules WHEN\nNiFi runs full re-scans"]
+        A2["Orchestrates watsonx.ai\nbatch enrichment jobs"]
+        A3["Manages tape recall\nbatch windows"]
+        A4["Coordinates downstream\npipeline dependencies"]
+        A5["Monitors pipeline\nhealth and SLAs"]
+    end
+
+    AIRFLOW_ROLE --&gt;|Triggers| NIFI_ROLE
+    NIFI_ROLE --&gt;|Events/metrics| AIRFLOW_ROLE</code></pre>
+<div class="admonition success">
+<p class="admonition-title">Key Principle</p>
+<p>NiFi and Airflow are <strong>complementary, not competing</strong>. NiFi handles individual file-level parallelism at scale — a concept Airflow has no equivalent for. Airflow handles DAG-level workflow coordination — a concept NiFi is not designed for.</p>
+</div>
+<hr />
+<h2 id="nifi-vs-airflow-detailed-comparison">NiFi vs Airflow Detailed Comparison</h2>
+<table>
+<thead>
+<tr>
+<th>Dimension</th>
+<th>Apache NiFi</th>
+<th>Astronomer Airflow</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Primary purpose</strong></td>
+<td>Real-time data flow, routing, transformation</td>
+<td>Workflow orchestration — scheduling DAGs</td>
+</tr>
+<tr>
+<td><strong>Data handling</strong></td>
+<td>Moves actual file bytes and metadata natively</td>
+<td>Orchestrates tasks that move data — does not move data itself</td>
+</tr>
+<tr>
+<td><strong>Filesystem crawling</strong></td>
+<td>Native <code>ListFile</code>, <code>FetchFile</code>, <code>GetSFTP</code> processors</td>
+<td>No native filesystem crawler — requires custom operators</td>
+</tr>
+<tr>
+<td><strong>Backpressure and flow control</strong></td>
+<td>Built-in — queues, prioritisation, rate limiting</td>
+<td>Not applicable — Airflow does not buffer data</td>
+</tr>
+<tr>
+<td><strong>Content extraction</strong></td>
+<td>Native <code>ExtractText</code>, <code>IdentifyMimeType</code>, Apache Tika</td>
+<td>Requires custom Python operators per file type</td>
+</tr>
+<tr>
+<td><strong>Event-driven triggers</strong></td>
+<td>Yes — reacts to new files, GPFS callbacks</td>
+<td>Primarily schedule-based (cron); event-driven is complex</td>
+</tr>
+<tr>
+<td><strong>20PB scale</strong></td>
+<td>Cluster mode — linear horizontal scale, millions of files/day</td>
+<td>Viable but requires significant custom operator engineering</td>
+</tr>
+<tr>
+<td><strong>Low-latency incremental</strong></td>
+<td>Sub-minute on new file arrival</td>
+<td>Minimum 30s scheduler loop; not truly event-driven</td>
+</tr>
+<tr>
+<td><strong>Tape stub detection</strong></td>
+<td>Reads filesystem xattr natively — no recall triggered</td>
+<td>Cannot distinguish stub vs hot file without custom operator</td>
+</tr>
+<tr>
+<td><strong>Built-in data provenance</strong></td>
+<td>Yes — per FlowFile provenance chain</td>
+<td>No — lineage must be captured externally</td>
+</tr>
+<tr>
+<td><strong>OpenShift deployment</strong></td>
+<td>StatefulSet + ZooKeeper — fully on-prem</td>
+<td>Astronomer Software — fully on-prem operator available</td>
+</tr>
+<tr>
+<td><strong>IBM ecosystem fit</strong></td>
+<td>OSS — integrates via HTTP/REST</td>
+<td>OSS — integrates via HTTP/REST</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="nifi-pipeline-architecture">NiFi Pipeline Architecture</h2>
+<pre class="mermaid"><code>flowchart TD
+    subgraph CRAWL["File Discovery"]
+        LS["ListFile\nGPFS filesystem walk\nor GPFS callback receiver"]
+        FF["FetchFile\nRead content bytes\nonly if not tape stub"]
+    end
+
+    subgraph STUB["Tape Stub Detection"]
+        DETECT["RouteOnAttribute\nCheck xattr hsm.state"]
+        META_ONLY["Filesystem metadata\nextract only\nno content read"]
+        RECALL["InvokeHTTP\nIBM Spectrum Archive\nrecall API"]
+    end
+
+    subgraph ROUTE["Content Routing"]
+        MIME["IdentifyMimeType\nDetect file type"]
+        ROUTE_P["RouteOnAttribute\nby mime.type and extension"]
+    end
+
+    subgraph EXTRACT["Format-Specific Extraction"]
+        TIKA["ExtractText via Apache Tika\nPDF, DOCX, PPTX, HTML, TXT"]
+        SAMTOOLS["ExecuteStreamCommand\nSAMtools header parse\nBAM, SAM, CRAM, VCF"]
+        HDF5["ExecuteStreamCommand\nh5dump / h5py script\nHDF5, Zarr, NetCDF"]
+        PYDICOM["ExecuteStreamCommand\nPyDICOM / libCZI\nDICOM, CZI, OME-TIFF"]
+        SCHEMA["ConvertRecord\nCSV, Parquet, Arrow\nschema inference"]
+        JSON_P["EvaluateJsonPath\nJSON, JSONL, IPYNB, YAML"]
+        XML_P["EvaluateXPath\nXML, GFF, GTF, SVG"]
+        UNPACK["UnpackContent\nTAR, ZIP, GZ, BGZF\nre-routes members back into pipeline"]
+    end
+
+    subgraph ENRICH["AI Enrichment"]
+        WX["InvokeHTTP\nwatsonx.ai REST API\nClassification + PII + Quality score"]
+    end
+
+    subgraph EMIT["Output"]
+        PG_OUT["PutDatabaseRecord\nPostgreSQL\nraw metadata"]
+        IKC_OUT["InvokeHTTP\nIBM Knowledge Catalog\nREST API asset creation"]
+        ASTRA["InvokeHTTP\nDataStax AstraDB\nvector embeddings"]
+        STREAM["PublishPulsar\nAstra Streaming\nreal-time events"]
+    end
+
+    LS --&gt; DETECT
+    DETECT --&gt;|hsm.state = MIGRATED| META_ONLY
+    DETECT --&gt;|hsm.state = RESIDENT| FF
+    META_ONLY --&gt; IKC_OUT
+    META_ONLY --&gt;|scheduled batch| RECALL
+    FF --&gt; MIME
+    MIME --&gt; ROUTE_P
+    ROUTE_P --&gt; TIKA &amp; SAMTOOLS &amp; HDF5 &amp; PYDICOM &amp; SCHEMA &amp; JSON_P &amp; XML_P &amp; UNPACK
+    UNPACK --&gt;|re-enter pipeline| MIME
+    TIKA &amp; SAMTOOLS &amp; HDF5 &amp; PYDICOM &amp; SCHEMA &amp; JSON_P &amp; XML_P --&gt; WX
+    WX --&gt; PG_OUT &amp; IKC_OUT &amp; ASTRA &amp; STREAM</code></pre>
+<hr />
+<h2 id="airflow-dag-design">Airflow DAG Design</h2>
+<pre class="mermaid"><code>flowchart LR
+    subgraph DAGS["Airflow DAGs on Astronomer"]
+        DAG1["dag: full-crawl-scheduled\n• Weekly full Storage Scale scan\n• Triggers NiFi ListFile via API\n• Monitors completion"]
+
+        DAG2["dag: tape-recall-batch\n• Nightly off-peak window\n• Submits HSM recall jobs\n• Queues content extraction"]
+
+        DAG3["dag: watsonx-enrichment-batch\n• Daily batch enrichment\n• Runs watsonx.ai on\n  newly catalogued assets"]
+
+        DAG4["dag: catalog-quality-check\n• Weekly data quality\n• Flags incomplete assets\n• Triggers re-extraction"]
+
+        DAG5["dag: ikc-sync-verify\n• Daily sync check\n• Verifies NiFi output\n  matches IKC record count"]
+    end</code></pre>
+<hr />
+<h2 id="nifi-cluster-sizing">NiFi Cluster Sizing</h2>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NiFi nodes</td>
+<td>10</td>
+<td>Parallel processing across 20PB</td>
+</tr>
+<tr>
+<td>ZooKeeper nodes</td>
+<td>3</td>
+<td>Cluster state quorum</td>
+</tr>
+<tr>
+<td>FlowFile repo per node</td>
+<td>500 GB SSD</td>
+<td>Fast local FlowFile queuing</td>
+</tr>
+<tr>
+<td>Content repo per node</td>
+<td>2 TB</td>
+<td>Temporary content buffer</td>
+</tr>
+<tr>
+<td>Target crawl throughput</td>
+<td>~700 TB/day</td>
+<td>20PB in 30 days</td>
+</tr>
+<tr>
+<td>Max concurrent tasks per node</td>
+<td>20</td>
+<td>Tunable per processor</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition tip">
+<p class="admonition-title">Post-Crawl Scale Down</p>
+<p>After the initial 20PB crawl is complete, the NiFi cluster can be scaled down to 3 nodes for steady-state event-driven incremental updates, reducing resource consumption significantly.</p>
+</div>
+<hr />
+<h2 id="astronomer-airflow-deployment-note">Astronomer Airflow Deployment Note</h2>
+<div class="admonition warning">
+<p class="admonition-title">Astronomer Software — Not Astronomer Cloud</p>
+<p>This architecture requires <strong>Astronomer Software</strong> (self-hosted on OpenShift via the Astronomer operator) — <strong>not</strong> Astronomer Cloud (SaaS).</p>
+<p>Astronomer Cloud would introduce an external SaaS dependency and potential data residency concerns for genomics and research data. Astronomer Software runs entirely within the OpenShift cluster with no outbound data transmission.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "search.share", "content.code.copy", "toc.integrate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

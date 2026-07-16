@@ -1,0 +1,1450 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Solution Architecture for 20PB Genomics & Research Data Cataloging Platform on OpenShift">
+      
+      
+        <meta name="author" content="Solution Architecture Team">
+      
+      
+      
+        <link rel="prev" href="../semantic-layer/">
+      
+      
+        <link rel="next" href="../../decisions/trade-offs/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>File Formats - 20PB Data Catalog — High Level Design</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#file-formats" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="20PB Data Catalog — High Level Design" class="md-header__button md-logo" aria-label="20PB Data Catalog — High Level Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            20PB Data Catalog — High Level Design
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              File Formats
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../architecture/overview/" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../ingestion/" class="md-tabs__link">
+          
+  
+  
+  Components
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../decisions/trade-offs/" class="md-tabs__link">
+          
+  
+  
+  Design Decisions
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="20PB Data Catalog — High Level Design" class="md-nav__button md-logo" aria-label="20PB Data Catalog — High Level Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    20PB Data Catalog — High Level Design
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/storage-integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage Integration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OpenShift Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Components
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Components
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ingestion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ingestion Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Catalog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../semantic-layer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Semantic Layer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    File Formats
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    File Formats
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#complete-file-format-inventory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Complete File Format Inventory
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#genomics-bioinformatics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Genomics &amp; Bioinformatics
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#research-scientific-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Research &amp; Scientific Data
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#documents-reports" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Documents &amp; Reports
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#archives-containers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Archives &amp; Containers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metadata-schema-per-asset-category" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Metadata Schema per Asset Category
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ibm-tape-special-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IBM Tape — Special Handling
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nifi-processor-coverage-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NiFi Processor Coverage Map
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Decisions
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design Decisions
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/trade-offs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trade-off Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/roadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Phased Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="file-formats">File Formats</h1>
+<h2 id="complete-file-format-inventory">Complete File Format Inventory</h2>
+<p>This page documents all file formats expected across the 20PB estate on IBM Storage Scale and IBM Tape, with the metadata extractable from each and the NiFi extraction approach.</p>
+<hr />
+<h2 id="genomics-bioinformatics">Genomics &amp; Bioinformatics</h2>
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Extension</th>
+<th>Data Type</th>
+<th>Primary Tier</th>
+<th>Metadata Extractable</th>
+<th>NiFi Extraction Approach</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>FASTQ</strong></td>
+<td><code>.fastq</code>, <code>.fq</code>, <code>.fastq.gz</code></td>
+<td>Unstructured sequences</td>
+<td>Scale (hot)</td>
+<td>Read count, quality scores, instrument ID, run ID, sample ID from header</td>
+<td>Custom <code>ExecuteScript</code> (Python/Groovy) + header parse</td>
+</tr>
+<tr>
+<td><strong>FASTA</strong></td>
+<td><code>.fasta</code>, <code>.fa</code>, <code>.fna</code></td>
+<td>Unstructured sequences</td>
+<td>Scale / Tape</td>
+<td>Sequence count, organism, contig names</td>
+<td>Header line parse</td>
+</tr>
+<tr>
+<td><strong>BAM</strong></td>
+<td><code>.bam</code></td>
+<td>Binary semi-structured</td>
+<td>Scale</td>
+<td>Sample ID, reference genome, read group, mapping stats via SAMtools</td>
+<td><code>ExecuteStreamCommand</code> → <code>samtools view -H</code></td>
+</tr>
+<tr>
+<td><strong>SAM</strong></td>
+<td><code>.sam</code></td>
+<td>Text semi-structured</td>
+<td>Scale</td>
+<td>Same as BAM</td>
+<td>Text header parse</td>
+</tr>
+<tr>
+<td><strong>CRAM</strong></td>
+<td><code>.cram</code></td>
+<td>Binary semi-structured</td>
+<td>Scale / Tape</td>
+<td>Same as BAM, compressed</td>
+<td><code>ExecuteStreamCommand</code> → SAMtools</td>
+</tr>
+<tr>
+<td><strong>VCF</strong></td>
+<td><code>.vcf</code>, <code>.vcf.gz</code>, <code>.bcf</code></td>
+<td>Semi-structured</td>
+<td>Scale</td>
+<td>Sample names, reference, variant count, caller tool, contig list</td>
+<td>Header parse of <code>##</code> lines</td>
+</tr>
+<tr>
+<td><strong>GFF / GTF</strong></td>
+<td><code>.gff</code>, <code>.gff3</code>, <code>.gtf</code></td>
+<td>Structured text</td>
+<td>Scale</td>
+<td>Feature types, gene count, organism, assembly version</td>
+<td>Line-count + field parse</td>
+</tr>
+<tr>
+<td><strong>BED</strong></td>
+<td><code>.bed</code></td>
+<td>Structured text</td>
+<td>Scale</td>
+<td>Chromosome list, feature count, track info</td>
+<td>First-line parse</td>
+</tr>
+<tr>
+<td><strong>HDF5</strong></td>
+<td><code>.h5</code>, <code>.hdf5</code></td>
+<td>Binary structured</td>
+<td>Scale</td>
+<td>Dataset names, dimensions, attributes, data types</td>
+<td><code>ExecuteStreamCommand</code> → h5dump or h5py script</td>
+</tr>
+<tr>
+<td><strong>Zarr</strong></td>
+<td><code>.zarr</code> (directory)</td>
+<td>Chunked array</td>
+<td>Scale</td>
+<td>Array shape, dtype, compressor, dimension labels</td>
+<td><code>.zarray</code> / <code>.zattrs</code> JSON read</td>
+</tr>
+<tr>
+<td><strong>DICOM</strong></td>
+<td><code>.dcm</code></td>
+<td>Binary structured</td>
+<td>Scale / Tape</td>
+<td>Patient (anonymised), modality, series, study date, pixel spacing</td>
+<td>PyDICOM extract</td>
+</tr>
+<tr>
+<td><strong>CZI</strong></td>
+<td><code>.czi</code></td>
+<td>Binary (Zeiss microscopy)</td>
+<td>Scale / Tape</td>
+<td>Channels, dimensions, objective, acquisition date</td>
+<td>libCZI / AICSImageIO</td>
+</tr>
+<tr>
+<td><strong>TIFF / BigTIFF</strong></td>
+<td><code>.tif</code>, <code>.tiff</code></td>
+<td>Binary image</td>
+<td>Scale / Tape</td>
+<td>Width, height, bit depth, compression, EXIF</td>
+<td>ImageMagick <code>identify</code> or PIL</td>
+</tr>
+<tr>
+<td><strong>OME-TIFF</strong></td>
+<td><code>.ome.tif</code></td>
+<td>Structured image</td>
+<td>Scale</td>
+<td>Full OME-XML metadata — channels, Z-stacks, timestamps, instrument</td>
+<td>OME metadata XML parse</td>
+</tr>
+<tr>
+<td><strong>BAI / CSI</strong></td>
+<td><code>.bai</code>, <code>.csi</code></td>
+<td>Index</td>
+<td>Scale</td>
+<td>Linked to parent BAM/CRAM — relationship inference</td>
+<td>Relationship inference only</td>
+</tr>
+<tr>
+<td><strong>Tabix index</strong></td>
+<td><code>.tbi</code></td>
+<td>Index</td>
+<td>Scale</td>
+<td>Linked to parent VCF — relationship inference</td>
+<td>Relationship inference only</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="research-scientific-data">Research &amp; Scientific Data</h2>
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Extension</th>
+<th>Data Type</th>
+<th>Primary Tier</th>
+<th>Metadata Extractable</th>
+<th>NiFi Extraction Approach</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>CSV / TSV</strong></td>
+<td><code>.csv</code>, <code>.tsv</code></td>
+<td>Structured</td>
+<td>Scale</td>
+<td>Column names, row count, delimiter, encoding, null rate</td>
+<td>NiFi <code>CSVReader</code> controller service</td>
+</tr>
+<tr>
+<td><strong>Excel</strong></td>
+<td><code>.xlsx</code>, <code>.xls</code></td>
+<td>Structured</td>
+<td>Scale</td>
+<td>Sheet names, column headers, row counts, author, date</td>
+<td>Apache POI via <code>ExecuteScript</code></td>
+</tr>
+<tr>
+<td><strong>Parquet</strong></td>
+<td><code>.parquet</code></td>
+<td>Columnar structured</td>
+<td>Scale</td>
+<td>Schema, row count, compression, writer library</td>
+<td>Apache Parquet tools / PyArrow</td>
+</tr>
+<tr>
+<td><strong>Arrow / Feather</strong></td>
+<td><code>.arrow</code>, <code>.feather</code></td>
+<td>Columnar</td>
+<td>Scale</td>
+<td>Schema, row count, metadata map</td>
+<td>PyArrow</td>
+</tr>
+<tr>
+<td><strong>NetCDF</strong></td>
+<td><code>.nc</code>, <code>.nc4</code></td>
+<td>Structured array</td>
+<td>Scale / Tape</td>
+<td>Variables, dimensions, global attributes, time range</td>
+<td>netCDF4-python</td>
+</tr>
+<tr>
+<td><strong>JSON</strong></td>
+<td><code>.json</code>, <code>.jsonl</code></td>
+<td>Semi-structured</td>
+<td>Scale</td>
+<td>Key names, nesting depth, array sizes, schema inference</td>
+<td>NiFi <code>JsonPathReader</code></td>
+</tr>
+<tr>
+<td><strong>XML</strong></td>
+<td><code>.xml</code></td>
+<td>Semi-structured</td>
+<td>Scale</td>
+<td>Root element, namespace, element count</td>
+<td>NiFi <code>XMLReader</code></td>
+</tr>
+<tr>
+<td><strong>YAML / TOML</strong></td>
+<td><code>.yaml</code>, <code>.yml</code>, <code>.toml</code></td>
+<td>Semi-structured</td>
+<td>Scale</td>
+<td>Top-level keys, type structure</td>
+<td><code>ExecuteScript</code></td>
+</tr>
+<tr>
+<td><strong>SQLite</strong></td>
+<td><code>.db</code>, <code>.sqlite</code></td>
+<td>Structured binary</td>
+<td>Scale</td>
+<td>Table names, schema, row counts</td>
+<td>SQLite CLI via <code>ExecuteStreamCommand</code></td>
+</tr>
+<tr>
+<td><strong>R data</strong></td>
+<td><code>.rds</code>, <code>.rda</code>, <code>.rdata</code></td>
+<td>Binary structured</td>
+<td>Scale</td>
+<td>Object class, dimensions, variable names</td>
+<td>R script via <code>ExecuteStreamCommand</code></td>
+</tr>
+<tr>
+<td><strong>Jupyter Notebook</strong></td>
+<td><code>.ipynb</code></td>
+<td>JSON semi-structured</td>
+<td>Scale</td>
+<td>Cell count, kernel, language, imported libraries</td>
+<td>JSON parse of <code>.ipynb</code> structure</td>
+</tr>
+<tr>
+<td><strong>MATLAB</strong></td>
+<td><code>.mat</code></td>
+<td>Binary structured</td>
+<td>Scale / Tape</td>
+<td>Variable names, dimensions, class types</td>
+<td>SciPy <code>loadmat</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="documents-reports">Documents &amp; Reports</h2>
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Extension</th>
+<th>Data Type</th>
+<th>Primary Tier</th>
+<th>Metadata Extractable</th>
+<th>NiFi Extraction Approach</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>PDF</strong></td>
+<td><code>.pdf</code></td>
+<td>Unstructured</td>
+<td>Scale / Tape</td>
+<td>Title, author, creation date, page count, extracted text</td>
+<td>Apache Tika <code>DetectType</code> + content extraction</td>
+</tr>
+<tr>
+<td><strong>Word</strong></td>
+<td><code>.docx</code>, <code>.doc</code></td>
+<td>Unstructured</td>
+<td>Scale</td>
+<td>Title, author, word count, creation date, tracked changes</td>
+<td>Apache Tika</td>
+</tr>
+<tr>
+<td><strong>PowerPoint</strong></td>
+<td><code>.pptx</code></td>
+<td>Unstructured</td>
+<td>Scale</td>
+<td>Title, author, slide count, creation date</td>
+<td>Apache Tika</td>
+</tr>
+<tr>
+<td><strong>Plain text</strong></td>
+<td><code>.txt</code>, <code>.log</code>, <code>.out</code></td>
+<td>Unstructured</td>
+<td>Scale / Tape</td>
+<td>Line count, encoding, first/last line timestamps</td>
+<td>NiFi built-in</td>
+</tr>
+<tr>
+<td><strong>Markdown</strong></td>
+<td><code>.md</code></td>
+<td>Unstructured</td>
+<td>Scale</td>
+<td>Heading structure, word count</td>
+<td>Text parse</td>
+</tr>
+<tr>
+<td><strong>HTML</strong></td>
+<td><code>.html</code></td>
+<td>Semi-structured</td>
+<td>Scale</td>
+<td>Title tag, meta tags, link count</td>
+<td>Tika / JSoup</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="archives-containers">Archives &amp; Containers</h2>
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Extension</th>
+<th>Type</th>
+<th>Tier</th>
+<th>NiFi Handling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Gzip</strong></td>
+<td><code>.gz</code></td>
+<td>Compressed</td>
+<td>Scale / Tape</td>
+<td><code>UnpackContent</code> → decompress → re-route members through pipeline</td>
+</tr>
+<tr>
+<td><strong>BZ2</strong></td>
+<td><code>.bz2</code></td>
+<td>Compressed</td>
+<td>Scale / Tape</td>
+<td><code>UnpackContent</code> → decompress → re-route</td>
+</tr>
+<tr>
+<td><strong>BGZF</strong></td>
+<td><code>.bgz</code></td>
+<td>Block-gzip (bioinformatics)</td>
+<td>Scale</td>
+<td>Block-indexed — used by <code>.vcf.gz</code>, <code>.fastq.gz</code> — unpack then parse</td>
+</tr>
+<tr>
+<td><strong>TAR</strong></td>
+<td><code>.tar</code>, <code>.tar.gz</code></td>
+<td>Archive container</td>
+<td>Scale / Tape</td>
+<td><code>UnpackContent</code> → list members → re-route each member individually</td>
+</tr>
+<tr>
+<td><strong>ZIP</strong></td>
+<td><code>.zip</code></td>
+<td>Archive container</td>
+<td>Scale / Tape</td>
+<td><code>UnpackContent</code> → list members → re-route</td>
+</tr>
+<tr>
+<td><strong>7-Zip</strong></td>
+<td><code>.7z</code></td>
+<td>Archive</td>
+<td>Tape</td>
+<td>Custom processor wrapping 7z CLI</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition info">
+<p class="admonition-title">Archive Handling Pattern</p>
+<p>All archive/compressed formats follow the same NiFi pattern: <code>UnpackContent</code> → members re-enter the pipeline at the <code>IdentifyMimeType</code> processor. This means archives within archives are handled recursively up to a configurable depth limit.</p>
+</div>
+<hr />
+<h2 id="metadata-schema-per-asset-category">Metadata Schema per Asset Category</h2>
+<pre class="mermaid"><code>graph TD
+    BASE["Base Asset\n────────────────────\npath, size, created, modified\nchecksum, storage_tier\nmime_type, owner, project\nhsm_state, content_catalogued"]
+
+    BASE --&gt; GEN["GenomicsSample\n────────────────────\nsample_id, experiment_type\nreference_genome, instrument\ncoverage, read_count\nsequencing_date, pipeline_version\nqc_score, paired_end"]
+
+    BASE --&gt; IMG["MicroscopyImage\n────────────────────\nmodality, channels\ndimensions_xyz, pixel_size_um\nobjective_magnification\nacquisition_date, stain_protocol\nz_slices, time_points"]
+
+    BASE --&gt; TAB["ResearchTable\n────────────────────\ncolumn_schema, row_count\ndata_types, null_rate\nproject_id, PI_name\npublication_doi, version"]
+
+    BASE --&gt; DOC["ResearchDocument\n────────────────────\ntitle, authors, abstract\npage_count, publication_date\nkeywords, doi, journal"]
+
+    BASE --&gt; ARC["ArchiveContainer\n────────────────────\nmember_count, total_size\nmember_types, compression_ratio\narchive_created_date"]
+
+    BASE --&gt; TAPE_ASSET["TapeArchiveAsset\n────────────────────\nvolume_serial, cartridge_id\nrecall_sla_hours, last_recalled\nltfs_path, stub_size\ncontent_catalogued: false"]</code></pre>
+<hr />
+<h2 id="ibm-tape-special-handling">IBM Tape — Special Handling</h2>
+<p>Tape-resident files require a two-phase cataloguing approach:</p>
+<pre class="mermaid"><code>flowchart LR
+    subgraph PHASE1["Phase 1 — Immediate on Crawl"]
+        P1A["Detect stub file\nxattr: hsm.state = MIGRATED"]
+        P1B["Extract filesystem metadata\npath, size, timestamps, HSM xattrs"]
+        P1C["Query IBM Spectrum Archive API\nvolume serial, cartridge ID, LTFS path"]
+        P1D["Create IKC asset record\nstatus: metadata-only\ncontent_catalogued: false"]
+    end
+
+    subgraph PHASE2["Phase 2 — Deferred Content Extract"]
+        P2A["Airflow DAG triggers\nscheduled batch recall window"]
+        P2B["Submit sequential HSM recall\ngroup by cartridge for efficiency"]
+        P2C["NiFi detects recalled file\nxattr: hsm.state = RESIDENT"]
+        P2D["Run format-specific extraction\nsame pipeline as hot files"]
+        P2E["Update IKC asset record\ncontent_catalogued: true\nfull metadata populated"]
+    end
+
+    P1A --&gt; P1B --&gt; P1C --&gt; P1D
+    P1D --&gt;|scheduled| P2A
+    P2A --&gt; P2B --&gt; P2C --&gt; P2D --&gt; P2E</code></pre>
+<div class="admonition warning">
+<p class="admonition-title">Sequential Tape Recall</p>
+<p>Always group tape recalls <strong>by cartridge</strong> and process sequentially. Random access across cartridges causes excessive tape seeking and dramatically reduces throughput. The Airflow <code>tape-recall-batch</code> DAG handles this by sorting pending recalls by <code>volume_serial</code> before submitting.</p>
+</div>
+<hr />
+<h2 id="nifi-processor-coverage-map">NiFi Processor Coverage Map</h2>
+<pre class="mermaid"><code>flowchart TD
+    MIME["IdentifyMimeType\nAll files"] --&gt; R["RouteOnAttribute\nby mime.type"]
+
+    R --&gt;|application/pdf, docx, pptx, html| TIKA["ExtractText\nApache Tika built-in"]
+    R --&gt;|x-bam, x-sam, x-cram, x-vcf| SAM["ExecuteStreamCommand\nSAMtools header"]
+    R --&gt;|x-hdf5, x-zarr, x-netcdf| HDF["ExecuteStreamCommand\nh5dump / h5py / netCDF4"]
+    R --&gt;|x-dicom, x-czi, x-ometiff| DICOM["ExecuteStreamCommand\nPyDICOM / libCZI"]
+    R --&gt;|text/csv, application/parquet| SCHEMA["ConvertRecord\nSchema inference"]
+    R --&gt;|application/json, x-ipynb| JSON["EvaluateJsonPath\nKey extraction"]
+    R --&gt;|application/xml, text/gff| XML["EvaluateXPath\nElement extraction"]
+    R --&gt;|application/zip, x-tar, gzip| UNPACK["UnpackContent\nRe-route members"]
+    R --&gt;|application/x-rdata, x-matlab| RMAT["ExecuteStreamCommand\nR / SciPy script"]
+
+    UNPACK --&gt;|each member| MIME</code></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "search.share", "content.code.copy", "toc.integrate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

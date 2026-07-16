@@ -1,0 +1,1224 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Solution Architecture for 20PB Genomics & Research Data Cataloging Platform on OpenShift">
+      
+      
+        <meta name="author" content="Solution Architecture Team">
+      
+      
+      
+        <link rel="prev" href="../trade-offs/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Phased Roadmap - 20PB Data Catalog — High Level Design</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#phased-roadmap" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="20PB Data Catalog — High Level Design" class="md-header__button md-logo" aria-label="20PB Data Catalog — High Level Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            20PB Data Catalog — High Level Design
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Phased Roadmap
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../architecture/overview/" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../components/ingestion/" class="md-tabs__link">
+          
+  
+  
+  Components
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../trade-offs/" class="md-tabs__link">
+          
+  
+  
+  Design Decisions
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="20PB Data Catalog — High Level Design" class="md-nav__button md-logo" aria-label="20PB Data Catalog — High Level Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    20PB Data Catalog — High Level Design
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/storage-integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage Integration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OpenShift Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Components
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Components
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../components/ingestion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ingestion Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../components/catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Catalog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../components/semantic-layer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Semantic Layer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../components/file-formats/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    File Formats
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Decisions
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design Decisions
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trade-offs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trade-off Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Phased Roadmap
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Phased Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#delivery-phases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Delivery Phases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phase-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phase-detail" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase Detail
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Phase Detail">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phase-1-foundation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 1 — Foundation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-2-crawl-catalog" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 2 — Crawl &amp; Catalog
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-3-ai-enrichment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 3 — AI Enrichment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-4-semantic-search" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 4 — Semantic Search
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-5-tape-integration-governance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 5 — Tape Integration &amp; Governance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-6-data-fabric-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 6 — Data Fabric (Optional)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#risk-register" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Risk Register
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="phased-roadmap">Phased Roadmap</h1>
+<h2 id="delivery-phases">Delivery Phases</h2>
+<p>The 20PB Data Catalog platform is delivered in six phases. Each phase is independently deployable and delivers incremental value. Phase 1 through 3 are the critical path for the core cataloguing requirement.</p>
+<hr />
+<h2 id="phase-overview">Phase Overview</h2>
+<pre class="mermaid"><code>gantt
+    title 20PB Data Catalog — Delivery Roadmap
+    dateFormat  YYYY-MM-DD
+    section Phase 1 Foundation
+    OpenShift namespaces and RBAC          :p1a, 2025-01-01, 2w
+    PostgreSQL and Elasticsearch deploy    :p1b, after p1a, 2w
+    IBM CP4D and IKC install               :p1c, after p1a, 3w
+    Storage Scale NFS mount and PVC        :p1d, after p1a, 1w
+    IKC custom asset type definitions      :p1e, after p1c, 2w
+
+    section Phase 2 Crawl and Catalog
+    Apache NiFi cluster deploy             :p2a, after p1e, 2w
+    NiFi processor pipeline build          :p2b, after p2a, 3w
+    Initial 20PB Storage Scale crawl       :p2c, after p2b, 4w
+    IKC asset population and validation    :p2d, after p2c, 2w
+
+    section Phase 3 AI Enrichment
+    watsonx.ai inference service deploy    :p3a, after p2d, 2w
+    NiFi to watsonx.ai enrichment pipeline :p3b, after p3a, 2w
+    PII detection rules and masking        :p3c, after p3b, 2w
+    Quality scoring validation             :p3d, after p3c, 1w
+
+    section Phase 4 Semantic Search
+    DataStax AstraDB deploy                :p4a, after p3d, 2w
+    DataStax Langflow deploy               :p4b, after p4a, 1w
+    Embedding generation pipeline          :p4c, after p4b, 2w
+    NL query interface and testing         :p4d, after p4c, 2w
+
+    section Phase 5 Tape and Governance
+    IBM DataStage deploy                   :p5a, after p4d, 2w
+    IBM Tape HSM connector                 :p5b, after p5a, 2w
+    Tape stub crawl and catalog            :p5c, after p5b, 2w
+    Astronomer Airflow deploy              :p5d, after p5c, 1w
+    Tape recall batch DAGs                 :p5e, after p5d, 2w
+    Multi-tenancy policies and RBAC        :p5f, after p5e, 2w
+
+    section Phase 6 Data Fabric
+    watsonx.data Open Lakehouse deploy     :p6a, after p5f, 2w
+    Hive Metastore structured catalog      :p6b, after p6a, 2w
+    IKC schema federation from watsonx.data:p6c, after p6b, 2w
+    Astra Streaming event backbone         :p6d, after p6c, 2w</code></pre>
+<hr />
+<h2 id="phase-detail">Phase Detail</h2>
+<h3 id="phase-1-foundation">Phase 1 — Foundation</h3>
+<p><strong>Goal:</strong> Establish the OpenShift platform foundation with IBM Knowledge Catalog installed and Storage Scale connected.</p>
+<p><strong>Deliverables:</strong></p>
+<ul>
+<li>[ ] OpenShift namespaces created: <code>data-catalog-infra</code>, <code>data-catalog-core</code>, <code>data-catalog-ingest</code>, <code>data-catalog-ai</code></li>
+<li>[ ] RBAC policies applied per namespace</li>
+<li>[ ] PostgreSQL StatefulSet deployed and healthy</li>
+<li>[ ] Elasticsearch StatefulSet deployed and healthy</li>
+<li>[ ] IBM Cloud Pak for Data (CP4D) installed via operator</li>
+<li>[ ] IBM Knowledge Catalog installed and accessible</li>
+<li>[ ] Storage Scale NFS PersistentVolume mounted and verified</li>
+<li>[ ] IKC custom asset types defined: <code>GenomicsSample</code>, <code>MicroscopyImage</code>, <code>ResearchTable</code>, <code>ResearchDocument</code>, <code>TapeArchiveAsset</code></li>
+<li>[ ] IKC governance policies: data domains, team roles, PII classification rules</li>
+</ul>
+<p><strong>Success Criteria:</strong> IKC UI accessible, custom asset types visible, Storage Scale files accessible from an OpenShift pod.</p>
+<hr />
+<h3 id="phase-2-crawl-catalog">Phase 2 — Crawl &amp; Catalog</h3>
+<p><strong>Goal:</strong> Perform the initial 20PB filesystem crawl on IBM Storage Scale and populate IKC with filesystem-level metadata for all files.</p>
+<p><strong>Deliverables:</strong></p>
+<ul>
+<li>[ ] Apache NiFi cluster deployed (10 nodes) with ZooKeeper</li>
+<li>[ ] NiFi processors configured: <code>ListFile</code>, <code>FetchFile</code>, <code>IdentifyMimeType</code>, <code>RouteOnAttribute</code></li>
+<li>[ ] Format-specific extraction processors configured (Tika, SAMtools, h5dump, PyDICOM)</li>
+<li>[ ] NiFi → IKC REST API output processor configured</li>
+<li>[ ] Initial full crawl executed and monitored</li>
+<li>[ ] IKC asset count validated against expected file count</li>
+<li>[ ] NiFi provenance chain verified</li>
+</ul>
+<p><strong>Success Criteria:</strong> All Storage Scale files have an IKC asset record with filesystem metadata. Search returns results in IKC UI.</p>
+<hr />
+<h3 id="phase-3-ai-enrichment">Phase 3 — AI Enrichment</h3>
+<p><strong>Goal:</strong> Enrich all catalogued assets with watsonx.ai-powered classification, quality scoring, and PII detection.</p>
+<p><strong>Deliverables:</strong></p>
+<ul>
+<li>[ ] watsonx.ai inference service deployed on OpenShift</li>
+<li>[ ] NiFi enrichment processor added: <code>InvokeHTTP</code> → watsonx.ai classification API</li>
+<li>[ ] Auto-categorisation labels applied to all assets</li>
+<li>[ ] Quality scores (<code>qc_score</code>) populated per asset</li>
+<li>[ ] PII detection rules configured — patient IDs, donor identifiers flagged</li>
+<li>[ ] PII-flagged assets masked in IKC per governance policy</li>
+<li>[ ] Relationship inference — BAM linked to VCF, samples linked to projects</li>
+</ul>
+<p><strong>Success Criteria:</strong> All assets have classification tags, quality scores, and PII masking applied where applicable.</p>
+<hr />
+<h3 id="phase-4-semantic-search">Phase 4 — Semantic Search</h3>
+<p><strong>Goal:</strong> Enable natural language querying and semantic similarity search over the catalog.</p>
+<p><strong>Deliverables:</strong></p>
+<ul>
+<li>[ ] DataStax AstraDB deployed and healthy</li>
+<li>[ ] DataStax Langflow deployed and accessible</li>
+<li>[ ] Embedding generation pipeline: NiFi → watsonx.ai embedding model → AstraDB</li>
+<li>[ ] Langflow RAG pipeline configured with IKC API connector</li>
+<li>[ ] Domain ontology loaded into Langflow (genomics terms, research terms)</li>
+<li>[ ] NL query interface tested with representative queries</li>
+<li>[ ] Permission-aware filtering validated (team isolation in NL results)</li>
+</ul>
+<p><strong>Success Criteria:</strong> Researchers can query the catalog in plain English and receive accurate, permission-filtered results with access URIs.</p>
+<hr />
+<h3 id="phase-5-tape-integration-governance">Phase 5 — Tape Integration &amp; Governance</h3>
+<p><strong>Goal:</strong> Extend the catalog to IBM Tape, implement full multi-tenancy, and add orchestration via Airflow.</p>
+<p><strong>Deliverables:</strong></p>
+<ul>
+<li>[ ] IBM DataStage deployed via CP4D operator</li>
+<li>[ ] IBM Tape HSM connector configured in NiFi</li>
+<li>[ ] Tape stub detection logic deployed (<code>xattr hsm.state</code> routing)</li>
+<li>[ ] All tape stub files catalogued in IKC with <code>TapeArchiveAsset</code> metadata</li>
+<li>[ ] IBM Spectrum Archive API integrated for volume/cartridge metadata</li>
+<li>[ ] Astronomer Airflow (Software) deployed via operator</li>
+<li>[ ] Airflow DAGs created: <code>full-crawl-scheduled</code>, <code>tape-recall-batch</code>, <code>watsonx-enrichment-batch</code>, <code>catalog-quality-check</code></li>
+<li>[ ] Multi-tenancy RBAC validated — team A cannot see team B's data</li>
+<li>[ ] DataStage lineage flowing into IKC for structured data pipelines</li>
+</ul>
+<p><strong>Success Criteria:</strong> Tape-resident files visible in IKC. Batch recall jobs running nightly. Multi-tenant isolation verified.</p>
+<hr />
+<h3 id="phase-6-data-fabric-optional">Phase 6 — Data Fabric (Optional)</h3>
+<p><strong>Goal:</strong> Add watsonx.data Open Lakehouse for structured data query federation and Astra Streaming for real-time event-driven catalog updates.</p>
+<p><strong>Deliverables:</strong></p>
+<ul>
+<li>[ ] IBM watsonx.data deployed via IBM operator</li>
+<li>[ ] Hive Metastore configured for Parquet/Iceberg/CSV assets on Storage Scale</li>
+<li>[ ] watsonx.data schema sync into IKC — structured tables visible in IKC UI</li>
+<li>[ ] DataStax Astra Streaming deployed</li>
+<li>[ ] NiFi <code>PublishPulsar</code> processor replacing direct HTTP API calls for high-volume events</li>
+<li>[ ] Event topics configured: <code>metadata.extracted</code>, <code>asset.created</code>, <code>tape.recall.*</code></li>
+</ul>
+<p><strong>Success Criteria:</strong> SQL queries via watsonx.data return results visible in IKC. Real-time metadata events flowing through Astra Streaming. All catalog updates event-driven.</p>
+<hr />
+<h2 id="risk-register">Risk Register</h2>
+<table>
+<thead>
+<tr>
+<th>Risk</th>
+<th>Severity</th>
+<th>Likelihood</th>
+<th>Mitigation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>20PB initial crawl exceeds 30-day target</td>
+<td>High</td>
+<td>Medium</td>
+<td>10-node NiFi cluster; prioritise hot Storage Scale data; Tape deferred to Phase 5</td>
+</tr>
+<tr>
+<td>Tape recall latency blocks catalog ingestion</td>
+<td>High</td>
+<td>Low</td>
+<td>Stub-first catalog approach — content extraction deferred, never blocks</td>
+</tr>
+<tr>
+<td>watsonx.ai misclassification of rare genomic formats</td>
+<td>Medium</td>
+<td>Medium</td>
+<td>Human-in-loop review workflow in IKC; configurable confidence threshold</td>
+</tr>
+<tr>
+<td>PostgreSQL scaling at billion-file metadata volume</td>
+<td>Medium</td>
+<td>Low</td>
+<td>Table partitioning by project/year; Cassandra for high-frequency KV lookups</td>
+</tr>
+<tr>
+<td>CP4D / IKC operator upgrade complexity</td>
+<td>Medium</td>
+<td>Medium</td>
+<td>Pin operator versions; tested upgrade path in non-prod first</td>
+</tr>
+<tr>
+<td>GPFS NFS performance under 10-node NiFi parallel load</td>
+<td>High</td>
+<td>Medium</td>
+<td>Test GPFS NFS throughput in Phase 1; tune NiFi max concurrent tasks</td>
+</tr>
+<tr>
+<td>OpenShift resource contention during initial crawl</td>
+<td>Medium</td>
+<td>Medium</td>
+<td>Crawl runs in dedicated <code>data-catalog-ingest</code> namespace with resource quotas</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "search.share", "content.code.copy", "toc.integrate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
