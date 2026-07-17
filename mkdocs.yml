@@ -57,6 +57,7 @@ nav:
   - Home: index.md
   - Architecture:
     - Overview: architecture/overview.md
+    - Layered Architecture: architecture/layers.md
     - Storage Integration: architecture/storage-integration.md
     - OpenShift Deployment: architecture/deployment.md
   - Components:
