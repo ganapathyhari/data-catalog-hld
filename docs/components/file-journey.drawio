@@ -1,0 +1,668 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2025-01-01T00:00:00.000Z" agent="IBM Bob" version="24.0.0">
+  <diagram id="page1" name="1. Full Stack Overview">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" page="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="2" value="DAY IN THE LIFE OF A FILE — Full Stack Overview" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;fontColor=#1e3a5f;" vertex="1" parent="1">
+          <mxGeometry x="100" y="20" width="900" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="3" value="STEP 1&#xa;File Detected&#xa;by NiFi Crawler" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="160" y="100" width="140" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="4" value="STEP 2&#xa;Tape Stub Check&#xa;xattr hsm.state?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="340" y="90" width="140" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="5" value="STUB: Filesystem&#xa;Metadata Only&#xa;(No content read)&#xa;→ IKC stub record" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="340" y="210" width="140" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="6" value="STEP 3&#xa;Filesystem Metadata&#xa;Captured&#xa;(path, size, dates)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="530" y="100" width="140" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="7" value="STEP 4&#xa;MIME Type&#xa;Identified&#xa;IdentifyMimeType" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="720" y="100" width="140" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="8" value="STEP 5 — Content Extractor Chosen (DIVERGES BY FILE TYPE)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="340" y="320" width="520" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="9" value="PDF&#xa;Apache Tika" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="160" y="420" width="100" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="10" value="JSON&#xa;JsonPathReader" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="280" y="420" width="100" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="11" value="SQLite&#xa;SQLite CLI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="400" y="420" width="100" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="12" value="Image&#xa;PyDICOM/PIL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="520" y="420" width="100" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="13" value="BAM/FASTQ&#xa;SAMtools/h5py" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="640" y="420" width="110" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="14" value="STEP 6 — Domain Metadata Extracted (DIVERGES BY FILE TYPE)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="340" y="520" width="520" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="15" value="STEP 7&#xa;IBM watsonx.ai&#xa;Enrichment&#xa;(All file types)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0078D4;strokeColor=#001E4E;fontColor=#ffffff;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="450" y="620" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="16" value="Auto-classify&#xa;domain + category" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="260" y="630" width="130" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="17" value="Quality score&#xa;0.0 - 1.0" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="700" y="630" width="130" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="18" value="PII Detection&#xa;(varies by type)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="450" y="700" width="200" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="19" value="STEP 8&#xa;IBM Knowledge Catalog&#xa;Asset Record Created&#xa;(custom asset type per file)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#107C10;strokeColor=#0E5A0E;fontColor=#ffffff;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="200" y="790" width="220" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="20" value="STEP 9&#xa;DataStax AstraDB&#xa;Embedding Stored&#xa;(semantic search)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#107C10;strokeColor=#0E5A0E;fontColor=#ffffff;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="480" y="790" width="220" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="21" value="STEP 10&#xa;File Searchable&#xa;in Catalog UI&#xa;+ NL Query Ready" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="760" y="790" width="200" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="22" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="3" target="4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="23" value="STUB" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="4" target="5">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="24" value="HOT" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="4" target="6">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="25" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="6" target="7">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="26" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="7" target="8">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="27" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="8" target="9">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="28" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="8" target="10">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="29" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="8" target="11">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="30" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="8" target="12">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="31" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="8" target="13">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="32" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="9" target="14">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="33" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="10" target="14">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="34" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="11" target="14">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="35" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="12" target="14">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="36" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="13" target="14">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="37" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="14" target="15">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="38" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="15" target="18">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="39" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="18" target="19">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="40" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="18" target="20">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="41" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="20" target="21">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="page2" name="2. PDF Journey (Unstructured)">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" page="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="2" value="DAY IN THE LIFE OF A .pdf FILE — Unstructured" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;fontColor=#1e3a5f;" vertex="1" parent="1">
+          <mxGeometry x="80" y="20" width="860" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="3" value="IBM Storage Scale or IBM Tape&#xa;report_2024.pdf — 4.2 MB" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="80" y="100" width="130" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="4" value="STEP 1: NiFi ListFile&#xa;File detected via&#xa;GPFS walk / event callback" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="270" y="110" width="150" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="5" value="STEP 2: Tape Stub?&#xa;xattr hsm.state&#xa;= RESIDENT" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="470" y="100" width="140" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="6" value="STEP 3: Filesystem Metadata&#xa;path: /research/reports/report_2024.pdf&#xa;size: 4.2 MB | created: 2024-03-15&#xa;owner: researcher_a" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="660" y="100" width="260" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="7" value="STEP 4: MIME Type&#xa;IdentifyMimeType&#xa;application/pdf" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="660" y="220" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="8" value="STEP 5: Route to Apache Tika&#xa;ExtractText processor&#xa;PDF-specific path — DIFFERS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="460" y="330" width="190" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="9" value="STEP 6: PDF Metadata Extracted&#xa;title: Clinical Genomics Report 2024&#xa;author: Dr. Smith&#xa;page_count: 42 | word_count: 18500&#xa;language: en | has_images: true&#xa;text_content: first 1000 chars" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="80" y="450" width="300" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="10" value="STEP 7: IBM watsonx.ai Enrichment&#xa;Classification: research_document&#xa;Category: clinical_genomics&#xa;Quality score: 0.87&#xa;PII RISK: HIGH — patient names in text&#xa;Action: flag + mask" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0078D4;strokeColor=#001E4E;fontColor=#ffffff;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="430" y="450" width="280" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="11" value="STEP 8: IKC Asset Created&#xa;Type: ResearchDocument&#xa;name: report_2024.pdf&#xa;title: Clinical Genomics Report 2024&#xa;page_count: 42&#xa;governance: PII_REVIEW_REQUIRED" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#107C10;strokeColor=#0E5A0E;fontColor=#ffffff;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="80" y="620" width="280" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="12" value="STEP 9: AstraDB Embedding&#xa;Input: title + author + extracted text&#xa;Model: watsonx.ai slate-30m&#xa;Output: 384-dim vector&#xa;Collection: research_documents" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#107C10;strokeColor=#0E5A0E;fontColor=#ffffff;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="420" y="620" width="270" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="13" value="STEP 10: Searchable in IKC&#xa;Keyword + semantic search&#xa;NL: show all 2024 clinical reports&#xa;Governance: PII review flagged&#xa;Lineage: Storage Scale path" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="750" y="620" width="230" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="14" value="NOTE: If on Tape stub&#xa;recall triggered on demand&#xa;Tika runs AFTER recall" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="80" y="330" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="15" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="3" target="4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="16" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="4" target="5">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="17" value="HOT" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="5" target="6">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="18" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="6" target="7">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="19" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="7" target="8">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="20" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="8" target="9">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="21" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="9" target="10">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="22" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="10" target="11">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="23" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="11" target="12">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="24" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="12" target="13">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="page3" name="3. JSON Journey (Semi-Structured)">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" page="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="2" value="DAY IN THE LIFE OF A .json FILE — Semi-Structured" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;fontColor=#1e3a5f;" vertex="1" parent="1">
+          <mxGeometry x="80" y="20" width="880" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="3" value="IBM Storage Scale&#xa;experiment_results.json&#xa;850 KB — hot tier" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="80" y="100" width="130" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="4" value="STEP 1: NiFi ListFile&#xa;GPFS event callback&#xa;new file written" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="270" y="110" width="150" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="5" value="STEP 2: Tape Stub?&#xa;RESIDENT&#xa;JSON small + active" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="470" y="100" width="140" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="6" value="STEP 3: Filesystem Metadata&#xa;path: /research/experiments/&#xa;       experiment_results.json&#xa;size: 850 KB | owner: researcher_b" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="660" y="100" width="260" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="7" value="STEP 4: MIME Type&#xa;IdentifyMimeType&#xa;application/json" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="660" y="220" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="8" value="STEP 5: Route to JsonPathReader&#xa;EvaluateJsonPath processor&#xa;Schema inference — DIFFERS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="460" y="330" width="190" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="9" value="STEP 6: JSON Metadata Extracted&#xa;top_level_keys: [experiment_id,&#xa;  samples, results, metadata]&#xa;nesting_depth: 4 | array_count: 3&#xa;total_records: 1240&#xa;schema: experiment_id:string,&#xa;  samples:array, results:array" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="80" y="450" width="300" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="10" value="STEP 7: IBM watsonx.ai Enrichment&#xa;Classification: experiment_data&#xa;Category: research_results&#xa;Quality score: 0.92&#xa;PII RISK: MEDIUM — sample IDs&#xa;Relationship: linked to PROJ_042" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0078D4;strokeColor=#001E4E;fontColor=#ffffff;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="430" y="450" width="280" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="11" value="STEP 8: IKC Asset Created&#xa;Type: ResearchTable&#xa;name: experiment_results.json&#xa;column_schema: {experiment_id,&#xa;  samples, results, metadata}&#xa;row_count: 1240 | project: PROJ_042" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#107C10;strokeColor=#0E5A0E;fontColor=#ffffff;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="80" y="630" width="280" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="12" value="STEP 9: AstraDB Embedding&#xa;Input: key names + schema description&#xa;NOT text content — schema structure&#xa;Model: watsonx.ai slate-30m&#xa;Collection: research_tables" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#107C10;strokeColor=#0E5A0E;fontColor=#ffffff;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="420" y="630" width="270" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="13" value="STEP 10: Searchable in IKC&#xa;NL: show all experiment result&#xa;  files from project 42&#xa;Semantic: find similar JSON schemas&#xa;Governance: medium PII flag" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="750" y="630" width="230" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="14" value="DIFFERS FROM PDF:&#xa;No OCR — schema from keys&#xa;Lower PII risk&#xa;Embedding = schema structure&#xa;not text content" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="80" y="330" width="190" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="15" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="3" target="4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="16" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="4" target="5">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="17" value="HOT" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="5" target="6">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="18" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="6" target="7">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="19" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="7" target="8">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="20" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="8" target="9">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="21" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="9" target="10">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="22" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="10" target="11">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="23" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="11" target="12">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="24" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="12" target="13">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="page4" name="4. SQLite Journey (Structured)">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" page="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="2" value="DAY IN THE LIFE OF A .sqlite FILE — Structured" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;fontColor=#1e3a5f;" vertex="1" parent="1">
+          <mxGeometry x="80" y="20" width="880" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="3" value="IBM Storage Scale&#xa;sample_registry.sqlite&#xa;1.2 GB — warm tier" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="80" y="100" width="130" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="4" value="STEP 1: NiFi ListFile&#xa;Scheduled full crawl&#xa;warm tier scan" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="270" y="110" width="150" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="5" value="STEP 2: Tape Stub?&#xa;RESIDENT&#xa;SQLite warm tier" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="470" y="100" width="140" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="6" value="STEP 3: Filesystem Metadata&#xa;path: /research/databases/&#xa;       sample_registry.sqlite&#xa;size: 1.2 GB | owner: data_team" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="660" y="100" width="260" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="7" value="STEP 4: MIME Type&#xa;IdentifyMimeType&#xa;application/x-sqlite3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="660" y="220" width="170" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="8" value="STEP 5: Route to SQLite3 CLI&#xa;ExecuteStreamCommand&#xa;.schema + .tables — DIFFERS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="460" y="330" width="190" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="9" value="STEP 6: SQLite Metadata Extracted&#xa;tables: [samples, projects,&#xa;  sequencing_runs, quality_metrics]&#xa;schema: samples(id, name, species,&#xa;  collection_date, project_id)&#xa;row_counts: samples:48520&#xa;  sequencing_runs:12840" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="80" y="450" width="310" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="10" value="STEP 7: IBM watsonx.ai Enrichment&#xa;Classification: sample_registry&#xa;Category: genomics_metadata&#xa;Quality score: 0.95&#xa;PII RISK: HIGH — donor linkable&#xa;Relationship: links to BAM files&#xa;  via samples.id (inferred)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0078D4;strokeColor=#001E4E;fontColor=#ffffff;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="440" y="450" width="280" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="11" value="STEP 8: IKC Asset Created&#xa;Type: ResearchTable&#xa;tables: [samples, projects,&#xa;  sequencing_runs, quality_metrics]&#xa;row_count: 61360 (total)&#xa;classification: PHI_Registry&#xa;governance: PII_REVIEW_REQUIRED" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#107C10;strokeColor=#0E5A0E;fontColor=#ffffff;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="80" y="650" width="280" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="12" value="STEP 9: AstraDB + Hive Metastore&#xa;AstraDB: schema description embedding&#xa;Hive Metastore: table schemas registered&#xa;  for SQL query federation via watsonx.data&#xa;UNIQUE TO STRUCTURED FILES" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#107C10;strokeColor=#0E5A0E;fontColor=#ffffff;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="420" y="650" width="290" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="13" value="STEP 10: Searchable in IKC&#xa;SQL via watsonx.data federation&#xa;NL: how many samples in registry?&#xa;Semantic: find similar registries&#xa;Governance: PHI flag applied&#xa;Lineage: links to BAM files" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="760" y="650" width="240" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="14" value="UNIQUE TO STRUCTURED:&#xa;SQLite CLI reads schema only&#xa;  (no full data load)&#xa;ALSO goes to Hive Metastore&#xa;SQL federation available&#xa;  via watsonx.data" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="80" y="330" width="200" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="15" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="3" target="4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="16" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="4" target="5">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="17" value="HOT" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="5" target="6">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="18" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="6" target="7">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="19" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="7" target="8">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="20" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="8" target="9">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="21" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="9" target="10">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="22" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="10" target="11">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="23" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="11" target="12">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="24" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="12" target="13">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="page5" name="5. Image Journey (Binary .dcm/.tif)">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" page="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="2" value="DAY IN THE LIFE OF AN IMAGE FILE — Binary (.dcm / .tif / .czi)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;fontColor=#1e3a5f;" vertex="1" parent="1">
+          <mxGeometry x="80" y="20" width="920" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="3" value="IBM Storage Scale or Tape&#xa;slide_HE_001.dcm&#xa;2.8 GB — DICOM WSI" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="80" y="100" width="130" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="4" value="STEP 1: NiFi ListFile&#xa;File detected&#xa;Large file flag set" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="270" y="110" width="150" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="5" value="STEP 2: Tape Stub?&#xa;Often MIGRATED&#xa;Large images on tape" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="470" y="95" width="150" height="85" as="geometry"/>
+        </mxCell>
+        <mxCell id="6" value="STUB: Filesystem meta only&#xa;DICOM header on tape -&#xa;recall header on demand&#xa;IKC partial record created" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="470" y="220" width="170" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="7" value="STEP 3: Filesystem Metadata&#xa;path: /genomics/imaging/slide_HE_001.dcm&#xa;size: 2.8 GB | created: 2024-01-22&#xa;owner: imaging_team" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="670" y="100" width="270" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="8" value="STEP 4: MIME Type&#xa;application/dicom&#xa;or image/tiff" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="670" y="220" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="9" value="STEP 5: Route to PyDICOM&#xa;ExecuteStreamCommand&#xa;Header-ONLY read — DIFFERS&#xa;NO pixel data read ever" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="460" y="340" width="200" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="10" value="STEP 6: DICOM Metadata Extracted&#xa;modality: Brightfield WSI&#xa;study_date: 2024-01-22&#xa;series: H+E stain&#xa;patient_id: ANON_4821 (anonymised)&#xa;pixel_spacing: 0.25um x 0.25um&#xa;image_size: 98304 x 65536 px&#xa;NOTE: NO pixel data read" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="80" y="460" width="310" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="11" value="STEP 7: IBM watsonx.ai Enrichment&#xa;Classification: microscopy_image&#xa;Category: histopathology&#xa;Quality score: 0.91&#xa;PII RISK: VERY HIGH&#xa;DICOM patient ID + DOB + institution&#xa;Action: STRICT masking enforced&#xa;Tag: DICOM_WSI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0078D4;strokeColor=#001E4E;fontColor=#ffffff;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="440" y="460" width="280" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="12" value="STEP 8: IKC Asset Created&#xa;Type: MicroscopyImage&#xa;modality: DICOM | stain: HE&#xa;pixel_size_um: 0.25&#xa;dimensions: 98304x65536&#xa;classification: PHI_Imaging&#xa;governance: PII_STRICT_MASK&#xa;patient_id: [MASKED]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#107C10;strokeColor=#0E5A0E;fontColor=#ffffff;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="80" y="660" width="290" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="13" value="STEP 9: AstraDB Embedding&#xa;Input: modality + stain + metadata&#xa;NOT pixel content — too large&#xa;Model: watsonx.ai slate-30m&#xa;Collection: imaging_assets&#xa;Enables: find similar WSI studies" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#107C10;strokeColor=#0E5A0E;fontColor=#ffffff;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="430" y="660" width="280" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="14" value="STEP 10: Searchable in IKC&#xa;NL: show all H+E slides Jan 2024&#xa;Semantic: find similar imaging studies&#xa;Governance: STRICT PII mask&#xa;patient_id NEVER exposed&#xa;Lineage: imaging team tracked" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="770" y="660" width="240" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="15" value="KEY DIFFERENCE:&#xa;Header-only — never pixel data&#xa;Highest PII risk class&#xa;patient_id always masked&#xa;Large files often on tape&#xa;Embedding = metadata only" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="80" y="340" width="200" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="16" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="3" target="4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="17" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="4" target="5">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="18" value="STUB" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="5" target="6">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="19" value="HOT" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="5" target="7">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="20" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="7" target="8">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="21" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="8" target="9">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="22" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="9" target="10">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="23" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="10" target="11">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="24" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="11" target="12">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="25" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="12" target="13">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="26" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="13" target="14">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="page6" name="6. Genomics Journey (.bam/.fastq)">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" page="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="2" value="DAY IN THE LIFE OF A GENOMICS FILE — Custom (.bam / .fastq / .vcf)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;fontColor=#1e3a5f;" vertex="1" parent="1">
+          <mxGeometry x="80" y="20" width="920" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="3" value="IBM Storage Scale&#xa;sample_HG002.bam&#xa;45 GB — warm/hot" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="80" y="100" width="130" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="4" value="STEP 1: NiFi ListFile&#xa;GPFS event callback&#xa;Large file BAM flag" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="270" y="110" width="150" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="5" value="STEP 2: Tape Stub?&#xa;RESIDENT&#xa;Active BAM on Scale" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="470" y="100" width="140" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="6" value="STEP 3: Filesystem Metadata&#xa;path: /genomics/alignments/&#xa;       sample_HG002.bam&#xa;size: 45.2 GB | owner: genomics_a" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="660" y="100" width="270" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="7" value="STEP 4: MIME Type&#xa;application/x-bam&#xa;(custom MIME registered)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="660" y="220" width="170" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="8" value="STEP 5: Route to SAMtools&#xa;ExecuteStreamCommand&#xa;samtools view -H — DIFFERS&#xa;Header-only (45GB, read KB)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="460" y="330" width="200" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="9" value="STEP 6: BAM Header Extracted&#xa;sample_id: HG002&#xa;reference_genome: GRCh38&#xa;read_groups: SM:HG002, LB:WGS_001&#xa;  PL:ILLUMINA, PU:NovaSeq&#xa;sort_order: coordinate&#xa;read_count: 2840000000&#xa;coverage: 35.2x&#xa;INDEX: sample_HG002.bai linked" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="60" y="460" width="320" height="150" as="geometry"/>
+        </mxCell>
+        <mxCell id="10" value="STEP 7: IBM watsonx.ai Enrichment&#xa;Classification: genomics_alignment&#xa;Category: WGS_human&#xa;Quality score: 0.96&#xa;PII RISK: HIGH — sample_id&#xa;Relationship inference:&#xa;  BAM linked to BAI index&#xa;  BAM linked to sample_HG002.vcf&#xa;  All linked to PROJ_WGS_2024" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0078D4;strokeColor=#001E4E;fontColor=#ffffff;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="430" y="460" width="290" height="150" as="geometry"/>
+        </mxCell>
+        <mxCell id="11" value="STEP 8: IKC Asset Created&#xa;Type: GenomicsSample&#xa;sample_id: HG002&#xa;experiment_type: WGS&#xa;reference_genome: GRCh38&#xa;coverage: 35.2 | reads: 2.84B&#xa;instrument: Illumina NovaSeq 6000&#xa;classification: PHI_Genomic&#xa;related: [HG002.bai, HG002.vcf,&#xa;  PROJ_WGS_2024]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#107C10;strokeColor=#0E5A0E;fontColor=#ffffff;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="60" y="680" width="310" height="160" as="geometry"/>
+        </mxCell>
+        <mxCell id="12" value="STEP 9: AstraDB Embedding&#xa;Input: sample metadata + experiment&#xa;  type + reference + coverage&#xa;Collection: genomics_samples&#xa;Enables:&#xa;  find similar WGS samples&#xa;  find all HG002 files&#xa;  coverage range queries" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#107C10;strokeColor=#0E5A0E;fontColor=#ffffff;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="430" y="680" width="280" height="160" as="geometry"/>
+        </mxCell>
+        <mxCell id="13" value="STEP 10: Searchable in IKC&#xa;NL: WGS BAM files coverage over 30x&#xa;Semantic: similar WGS samples&#xa;Governance: PHI_Genomic tag&#xa;Lineage: FASTQ -&gt; BAM -&gt; VCF&#xa;  full pipeline visible in IKC" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="770" y="680" width="240" height="160" as="geometry"/>
+        </mxCell>
+        <mxCell id="14" value="KEY DIFFERENCE:&#xa;SAMtools header-only&#xa;  (45GB, reads only KB)&#xa;Index .bai auto-linked&#xa;VCF linked by sample_id&#xa;Domain-specific asset type&#xa;Genomics lineage tracked&#xa;  FASTQ -&gt; BAM -&gt; VCF" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="60" y="330" width="230" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="15" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="3" target="4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="16" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="4" target="5">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="17" value="HOT" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="5" target="6">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="18" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="6" target="7">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="19" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="7" target="8">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="20" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="8" target="9">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="21" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="9" target="10">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="22" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="10" target="11">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="23" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="11" target="12">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="24" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="12" target="13">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="page7" name="7. Divergence Comparison">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" page="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="2" value="Where File Journeys Diverge — Side-by-Side Comparison" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;fontColor=#1e3a5f;" vertex="1" parent="1">
+          <mxGeometry x="80" y="20" width="1000" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="3" value="STEP" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1e3a5f;strokeColor=#1e3a5f;fontColor=#ffffff;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="80" y="80" width="120" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="4" value=".pdf&#xa;Unstructured" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="210" y="80" width="150" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="5" value=".json&#xa;Semi-Structured" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="370" y="80" width="150" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="6" value=".sqlite&#xa;Structured" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="530" y="80" width="150" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="7" value=".image (.dcm)&#xa;Binary" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="690" y="80" width="150" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="8" value=".bam/.fastq&#xa;Custom Genomics" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="850" y="80" width="160" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="9" value="Steps 1-4&#xa;SAME FOR ALL" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontStyle=2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="80" y="140" width="120" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="10" value="NiFi crawl + tape stub check + filesystem metadata + MIME type identification — identical for all file types" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontStyle=2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="210" y="140" width="800" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="11" value="Step 5&#xa;Extractor" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="80" y="200" width="120" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="12" value="Apache Tika&#xa;ExtractText&#xa;Full text + meta" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="210" y="200" width="150" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="13" value="JsonPathReader&#xa;EvaluateJsonPath&#xa;Key + schema" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="370" y="200" width="150" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="14" value="SQLite3 CLI&#xa;ExecuteStream&#xa;Schema + tables" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="530" y="200" width="150" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="15" value="PyDICOM / libCZI&#xa;ExecuteStream&#xa;Header only" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="690" y="200" width="150" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="16" value="SAMtools view -H&#xa;or h5py / h5dump&#xa;Header only" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="850" y="200" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="17" value="Step 6&#xa;Metadata" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="80" y="270" width="120" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="18" value="Title, author,&#xa;page count,&#xa;word count,&#xa;extracted text" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="210" y="270" width="150" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="19" value="Top-level keys,&#xa;schema, nesting&#xa;depth, array&#xa;sizes, records" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="370" y="270" width="150" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="20" value="Table names,&#xa;schema, row&#xa;counts, column&#xa;types" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="530" y="270" width="150" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="21" value="Modality, pixel&#xa;spacing, study&#xa;date, series,&#xa;dimensions" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="690" y="270" width="150" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="22" value="Sample ID, ref&#xa;genome, coverage,&#xa;read count,&#xa;instrument" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="850" y="270" width="160" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="23" value="Step 7&#xa;PII Risk" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="80" y="350" width="120" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="24" value="HIGH&#xa;Patient names&#xa;in text" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="210" y="350" width="150" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="25" value="MEDIUM&#xa;Sample IDs&#xa;may link" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="370" y="350" width="150" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="26" value="HIGH&#xa;Donor linkable&#xa;via registry" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="530" y="350" width="150" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="27" value="VERY HIGH&#xa;DICOM patient ID&#xa;strict masking" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d83b01;strokeColor=#8a2700;fontColor=#ffffff;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="690" y="350" width="150" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="28" value="HIGH&#xa;Sample ID links&#xa;to donor" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="850" y="350" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="29" value="Step 8&#xa;IKC Asset Type" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="80" y="420" width="120" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="30" value="ResearchDocument" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="210" y="420" width="150" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="31" value="ResearchTable" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="370" y="420" width="150" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="32" value="ResearchTable&#xa;+ Hive Metastore" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="530" y="420" width="150" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="33" value="MicroscopyImage" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="690" y="420" width="150" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="34" value="GenomicsSample" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="850" y="420" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="35" value="Step 9&#xa;Embedding Source" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="80" y="490" width="120" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="36" value="Full extracted&#xa;text + title&#xa;+ author" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="210" y="490" width="150" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="37" value="Key names +&#xa;schema desc&#xa;+ domain terms" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="370" y="490" width="150" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="38" value="Table names +&#xa;column names +&#xa;schema + counts" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="530" y="490" width="150" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="39" value="Modality + stain&#xa;+ metadata ONLY&#xa;NOT pixel data" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="690" y="490" width="150" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="40" value="Sample metadata&#xa;+ experiment type&#xa;+ reference genome" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="850" y="490" width="160" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="41" value="Step 10&#xa;Special Notes" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="80" y="570" width="120" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="42" value="PII review flag&#xa;Tape recall may&#xa;delay Tika" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="210" y="570" width="150" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="43" value="Synced to&#xa;watsonx.data&#xa;Hive Metastore&#xa;SQL queryable" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="370" y="570" width="150" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="44" value="Hive Metastore&#xa;SQL + IKC&#xa;watsonx.data&#xa;federation" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="530" y="570" width="150" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="45" value="Strictest PII&#xa;patient_id masked&#xa;Header only&#xa;never pixel data" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="690" y="570" width="150" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="46" value="Index .bai linked&#xa;VCF linked by&#xa;sample_id&#xa;Full lineage&#xa;FASTQ-BAM-VCF" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="850" y="570" width="160" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="47" value="COMMON TO ALL: Steps 1-4 (crawl, tape check, filesystem metadata, MIME) and Step 7 (watsonx.ai enrichment) and Steps 8-10 (IKC + AstraDB + searchable) follow the same pattern for every file type" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="80" y="690" width="930" height="50" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

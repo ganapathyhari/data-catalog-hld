@@ -64,6 +64,7 @@ nav:
     - Data Catalog: components/catalog.md
     - Semantic Layer: components/semantic-layer.md
     - File Formats: components/file-formats.md
+    - Day in the Life of a File: components/file-journey.md
   - Design Decisions:
     - Trade-off Analysis: decisions/trade-offs.md
     - Phased Roadmap: decisions/roadmap.md
